@@ -105,18 +105,17 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     
-    - name: Get Storage Account Connection String
-      run: |
-          storage_account_name=${{ env.STORAGE_ACCOUNT_NAME }}
-          connection_string= $(terraform output -state terraform.tfstate azurerm_storage_account.$storage_account_name.primary_connection_string)
-          echo "Connection String: $connection_string"  # Optional for debugging
-    
-    - name: Upload File to Storage
-      uses: Azure/storage-upload@v1
+    - name: Deploy to storage using CLI
+      uses: azure/CLI@v1
       with:
-          connection_string: ${{ connection_string }}  # Dynamically set from Terraform output
-          container_name: ${{ env.CONTAINER_NAME }}
-          file_path: 'file_uploads/example.txt'  # Modify this path as needed
+          azcliversion: latest
+          inlineScript: |
+            ls
+            az account show
+            connection_string="$(terraform output -state=terraform.tfstate azurerm_storage_account.${storage_account_name}.primary_connection_string)"
+            echo "Connection String: $connection_string"  # Optional for debugging
+            az storage blob upload-batch --account-name ${{ env.STORAGE_ACCOUNT_NAME }} -d ${{env.CONTAINER_NAME}} -s './file_uploads' --pattern "*.txt"
+
     
     
   #      - name: Azure CLI Upload File
