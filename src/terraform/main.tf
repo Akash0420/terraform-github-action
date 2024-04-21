@@ -47,5 +47,5 @@ resource "azurerm_storage_blob" "blobs" {
   storage_account_name   = azurerm_storage_account.storage.name
   storage_container_name = azurerm_storage_container.blob_container.name
   type                   = "Block"
-  source                 = each.key # Path to the file to upload
+  source                 = each.key
 }
