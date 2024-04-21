@@ -17,6 +17,7 @@ terraform {
 provider "azurerm" {
   features {}
 }
+
 resource "azurerm_resource_group" "resgrp" {
   name     = "bugsrepro-uploadfile"
   location = "WestUS2"
@@ -32,15 +33,15 @@ resource "azurerm_storage_account" "storageaccount" {
 
 resource "azurerm_storage_container" "blobstorage" {
   name                  = "bugsrepro-uploadfileblob-container"
- # resource_group_name   = "${azurerm_resource_group.resgrp.name}"
+  #resource_group_name   = "${azurerm_resource_group.resgrp.name}"
   storage_account_name  = "${azurerm_storage_account.storageaccount.name}"
   container_access_type = "blob"
 }
 
 resource "azurerm_storage_blob" "blobobject" {
-  depends_on             = ["azurerm_storage_container.blobstorage"]
+  #depends_on             = ["azurerm_storage_container.blobstorage"]
   name                   = "index.html"
-  #resource_group_name    = "${azurerm_resource_group.resgrp.name}"
+ # resource_group_name    = "${azurerm_resource_group.resgrp.name}"
   storage_account_name   = "${azurerm_storage_account.storageaccount.name}"
   storage_container_name = "${azurerm_storage_container.blobstorage.name}"
   type                   = "block"
