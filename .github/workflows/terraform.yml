@@ -85,7 +85,7 @@ jobs:
 
 
   upload_file:
-    name: 'Terraform plan'
+    name: 'upload file to azure storage'
     runs-on: ubuntu-latest
     needs: [terraform_apply]
     environment: production
@@ -100,15 +100,29 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     
-    - name: Azure CLI Upload File
-      uses: azure/cli@v1
+    - name: Get Storage Account Connection String
+      run: |
+          storage_account_name=${{ env.STORAGE_ACCOUNT_NAME }}
+          connection_string= $(terraform output -state terraform.tfstate azurerm_storage_account.$storage_account_name.primary_connection_string)
+          echo "Connection String: $connection_string"  # Optional for debugging
+    
+    - name: Upload File to Storage
+      uses: Azure/storage-upload@v1
       with:
-        azcliversion: 2.30.0
-        inlineScript: |
-          az storage blob upload --account-name $STORAGE_ACCOUNT_NAME --container-name $CONTAINER_NAME --file $FILE_PATH --name example.txt
+          connection_string: ${{ connection_string }}  # Dynamically set from Terraform output
+          container_name: ${{ env.CONTAINER_NAME }}
+          file_path: 'file_uploads/example.txt'  # Modify this path as needed
+    
+    
+  #      - name: Azure CLI Upload File
+  #    uses: azure/cli@v1
+  #   with:
+  #      azcliversion: 2.30.0
+ #       inlineScript: |
+   #       az storage blob upload --account-name $STORAGE_ACCOUNT_NAME --container-name $CONTAINER_NAME --file $FILE_PATH --name example.txt
+  #        az storage blob upload-batch --account-name ${{ env.BLOB_STORAGE_ACCOUNT_NAME }} -d '<storagename>' -s './<folder name>' --pattern "*.txt"
