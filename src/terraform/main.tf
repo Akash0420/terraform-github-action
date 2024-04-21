@@ -38,7 +38,7 @@ resource "azurerm_storage_account" "storage" {
 resource "azurerm_storage_container" "blob_container" {
   name                  = "myblobcontainer1"
   storage_account_name  = azurerm_storage_account.storage.name
-  container_access_type = "blob"
+  container_access_type = "private"
 }
 
 resource "azurerm_storage_blob" "blobs" {
