@@ -46,5 +46,5 @@ resource "azurerm_storage_blob" "blob" {
   storage_account_name   = azurerm_storage_account.storage.name
   storage_container_name = azurerm_storage_container.blob_container.name
   type                   = "Block"
-  source                 = "${path.module}/../../../examplefile.txt" # Path to the file to upload
+  source                 = "${path.module}/../../examplefile.txt" # Path to the file to upload
 }
