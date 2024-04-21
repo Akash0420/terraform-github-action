@@ -24,7 +24,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 resource "azurerm_storage_account" "storage" {
-  name                     = "mytfstorageaccount"
+  name                     = "mytfstorageaccount1"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
@@ -36,7 +36,7 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_storage_container" "blob_container" {
-  name                  = "myblobcontainer"
+  name                  = "myblobcontainer1"
   storage_account_name  = azurerm_storage_account.storage.name
   container_access_type = "private"
 }
