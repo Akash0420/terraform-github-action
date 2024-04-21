@@ -16,7 +16,7 @@ env:
   ROOT_PATH: '${{ github.workspace }}/src/terraform'
   STORAGE_ACCOUNT_NAME: "mytfstorageaccount"
   CONTAINER_NAME: "myblobcontainer"
-  FILE_PATH: '${{ github.workspace }}/examplefile.txt'
+  FILE_PATH: '${{ github.workspace }}/index.html'
 
 
 jobs:
@@ -51,7 +51,7 @@ jobs:
       working-directory: ${{env.ROOT_PATH}}
   
 
-  terraform_appply:
+  terraform_apply:
     name: 'Terraform apply'
     runs-on: ubuntu-latest
     needs: [terraform_plan]
@@ -83,9 +83,32 @@ jobs:
       run: terraform apply --auto-approve
       working-directory: ${{env.ROOT_PATH}}
 
+
+  upload_file:
+    name: 'Terraform plan'
+    runs-on: ubuntu-latest
+    needs: [terraform_apply]
+    environment: production
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
     - name: Azure CLI Upload File
       uses: azure/cli@v1
       with:
         azcliversion: 2.30.0
         inlineScript: |
-          az storage blob upload --account-name $STORAGE_ACCOUNT_NAME --container-name $CONTAINER_NAME --file $FILE_PATH --name examplefile.txt
+          az storage blob upload --account-name $STORAGE_ACCOUNT_NAME --container-name $CONTAINER_NAME --file $FILE_PATH --name index.html
