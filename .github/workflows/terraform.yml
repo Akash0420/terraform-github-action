@@ -94,7 +94,7 @@ jobs:
       with:
           azcliversion: latest
           inlineScript: |
-           az storage blob upload-batch --account-name ${{ env.STORAGE_ACCOUNT_NAME }} --account-key ${{secrets.Azure_STORAGE_KEY }} --auth-mode key --overwrite -d ${{env.CONTAINER_NAME}} -s .
+           az storage blob upload-batch --account-name ${{ env.STORAGE_ACCOUNT_NAME }} --account-key ${{secrets.Azure_STORAGE_KEY }} --auth-mode key --overwrite -d ${{env.CONTAINER_NAME}} -s ./index.html
 
   #upload_file:
   #  name: 'upload file to azure storage'
