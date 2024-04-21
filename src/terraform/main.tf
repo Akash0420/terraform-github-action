@@ -6,7 +6,7 @@ terraform {
     }
   }
 
- backend "azurerm" {
+  backend "azurerm" {
     resource_group_name  = "cloud-shell-storage-centralindia"
     storage_account_name = "csg10032003730c9146"
     container_name       = "tfstate"
@@ -14,18 +14,37 @@ terraform {
   }
 }
 
-# Configure the Microsoft Azure Provider
 provider "azurerm" {
   features {}
-  # subscription_id = var.subscription_id
-  # client_id       = var.client_id
-  # client_secret   = var.client_secret
-  # tenant_id       = var.tenant_id
 }
 
-
-# Create a resource group
 resource "azurerm_resource_group" "rg" {
   name     = "example-resources"
   location = "centralindia"
+}
+
+resource "azurerm_storage_account" "storage" {
+  name                     = "mytfstorageaccount"
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+
+  tags = {
+    environment = "terraform"
+  }
+}
+
+resource "azurerm_storage_container" "blob_container" {
+  name                  = "myblobcontainer"
+  storage_account_name  = azurerm_storage_account.storage.name
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_blob" "blob" {
+  name                   = "examplefile.txt"
+  storage_account_name   = azurerm_storage_account.storage.name
+  storage_container_name = azurerm_storage_container.blob_container.name
+  type                   = "Block"
+  source                 = "../../examplefile.txt" # Path to the file to upload
 }
