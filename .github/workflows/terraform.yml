@@ -83,23 +83,6 @@ jobs:
       run: terraform apply --auto-approve
       working-directory: ${{env.ROOT_PATH}}
 
-
-  upload_file:
-    name: 'upload file to azure storage'
-    runs-on: ubuntu-latest
-    needs: [terraform_apply]
-    environment: production
-
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v3
-
     - name: Azure Login
       uses: azure/login@v1
       with:
@@ -110,11 +93,36 @@ jobs:
       with:
           azcliversion: latest
           inlineScript: |
-            ls
-            az account show
-            connection_string="$(terraform output -state=terraform.tfstate azurerm_storage_account.${storage_account_name}.primary_connection_string)"
-            echo "Connection String: $connection_string"  # Optional for debugging
             az storage blob upload-batch --account-name ${{ env.STORAGE_ACCOUNT_NAME }} -d ${{env.CONTAINER_NAME}} -s './file_uploads' --pattern "*.txt"
+
+
+  #upload_file:
+  #  name: 'upload file to azure storage'
+  #  runs-on: ubuntu-latest
+  #  needs: [terraform_apply]
+  #  environment: production
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+  #  defaults:
+  #    run:
+  #      shell: bash
+
+  #  steps:
+    # Checkout the repository to the GitHub Actions runner
+  #  - name: Checkout
+  #    uses: actions/checkout@v3
+
+  #  - name: Azure Login
+  #    uses: azure/login@v1
+  #    with:
+  #      creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+  #  - name: Deploy to storage using CLI
+  #    uses: azure/CLI@v1
+  #    with:
+  #        azcliversion: latest
+  #        inlineScript: |
+  #          az storage blob upload-batch --account-name ${{ env.STORAGE_ACCOUNT_NAME }} -d ${{env.CONTAINER_NAME}} -s './file_uploads' --pattern "*.txt"
 
     
     
