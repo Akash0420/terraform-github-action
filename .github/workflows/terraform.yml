@@ -14,8 +14,8 @@ env:
   ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
   ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
   ROOT_PATH: '${{ github.workspace }}/src/terraform'
-  STORAGE_ACCOUNT_NAME: "mytfstorageaccount"
-  CONTAINER_NAME: "myblobcontainer"
+  STORAGE_ACCOUNT_NAME: "mytfstorageaccount1"
+  CONTAINER_NAME: "myblobcontainer1"
   FILE_PATH: '${{ github.workspace }}/index.html'
 
 
