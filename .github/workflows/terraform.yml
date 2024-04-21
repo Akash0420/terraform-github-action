@@ -82,4 +82,4 @@ jobs:
       with:
           azcliversion: latest
           inlineScript: |
-            az storage blob upload-batch --account-name ${{ env.STORAGE_ACCOUNT_NAME }} --account-key ${{secrets.AZURE_STORAGE_KEY }} --auth-mode key --overwrite -d ${{env.CONTAINER_NAME}} -s ${{ env.FILE_PATH }}
+           az storage blob upload-batch --account-name mytfstorageaccount1 --account-key *** --auth-mode key --overwrite -d myblobcontainer1 -s /home/runner/work/terraform-github-action/terraform-github-action/file_uploads --pattern "*.txt"
