@@ -2,7 +2,9 @@ name: 'tf deploy to azure'
 
 on: [push]
 
-
+permissions:
+  contents: read
+  
 env:
   ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
   ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
@@ -77,4 +79,4 @@ jobs:
       with:
           azcliversion: latest
           inlineScript: |
-           az storage blob upload-batch --account-name mytfstorageaccount1 --account-key ${{secrets.AZURE_STORAGE_KEY}} --auth-mode key --overwrite -d myblobcontainer1 -s ./terraform-github-action/terraform-github-action/terraform/file_uploads
+           az storage blob upload-batch --account-name mytfstorageaccount1 --account-key ${{secrets.AZURE_STORAGE_KEY}} --auth-mode key --overwrite -d myblobcontainer1 -s /home/runner/work/terraform-github-action/terraform-github-action/terraform/file_uploads
